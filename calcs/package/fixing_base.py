@@ -317,7 +317,7 @@ class BasePlateCalculator():
     def bp_thk_pro(self):
         t_br = self.bp_thk_bearing()["t"]
         t_tn = self.bp_thk_tension()["t"]
-        t_pro = min(math.ceil(min(t_br, t_tn) * 2) / 2, 5)
+        t_pro = max(math.ceil(max(t_br, t_tn) * 2) / 2, 5)
         
         return {
             "t_pro": t_pro
@@ -399,7 +399,7 @@ class FinPlateCalculator():
         phi = 0.9
         Mu = self.fin_plate_load()["Vv"] * self.v_shear_ecc
         t_req = (4 * Mu) / (phi * self.steel_fy * self.fin_width**2)
-        t_pro = min(math.ceil(t_req * 2) / 2, 5)
+        t_pro = max(math.ceil(t_req * 2) / 2, 5)
 
         return {
             "phi": round(phi, 2),
