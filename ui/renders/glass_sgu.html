@@ -1,0 +1,116 @@
+<div class="glass__output">
+    <div class="result__left">
+        <h3>Glass Resistance</h3>
+        <table class="glass">
+            <thead>
+                <th>NFL</th>
+                <th>GTF</th>
+                <th>LR</th>
+                <th>P<sub>z</sub> (kPa)</th>
+                <th>Ratio</th>
+                <th>Check</th>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{ summary.load_resistance.nfl }}</td>
+                    <td>{{ summary.load_resistance.gtf }}</td>
+                    <td>{{ summary.load_resistance.lr }}</td>
+                    <td>{{ summary.params.wind_load }}</td>
+                    <td>{{ summary.load_resistance.ratio }}</td>
+                    <td class="{% if summary.load_resistance.ratio < 1 %}ok{% else %}not-ok{% endif %}">
+                        {% if summary.load_resistance.ratio < 1 %} OK {% else %} NOT OK {% endif %}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>Deflection</h3>
+        <table class="glass">
+            <thead>
+                <th>r<sub>0</sub></th>
+                <th>r<sub>1</sub></th>
+                <th>r<sub>2</sub></th>
+                <th>x</th>
+                <th>δ (mm)</th>
+                <th>δ<sub>a</sub> (mm)</th>
+                <th>Ratio</th>
+                <th>Check</th>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{ summary.deflection.r_0 }}</td>
+                    <td>{{ summary.deflection.r_1 }}</td>
+                    <td>{{ summary.deflection.r_2 }}</td>
+                    <td>{{ summary.deflection.x }}</td>
+                    <td>{{ summary.deflection.delta }}</td>
+                    <td>{{ summary.deflection.delta_a }}</td>
+                    <td>{{ summary.deflection.ratio }}</td>
+                    <td class="{% if summary.deflection.ratio < 1 %}ok{% else %}not-ok{% endif %}">
+                        {% if summary.deflection.ratio < 1 %} OK {% else %} NOT OK {% endif %}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>Silicone Bite</h3>
+        <table class="glass">
+            <thead>
+                <th>B (mm)</th>
+                <th>F<sub>s</sub> (kPa)</th>
+                <th>t<sub>r</sub> (mm)</th>
+                <th>t<sub>p</sub> (mm)</th>
+                <th>e<sub>r</sub> (mm)</th>
+                <th>e<sub>p</sub> (mm)</th>
+                <th>Check</th>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{ summary.params.width }}</td>
+                    <td>{{ summary.silicone_bite.sigma_s }}</td>
+                    <td>{{ summary.silicone_bite.t_req }}</td>
+                    <td>{{ summary.silicone_bite.t_pro }}</td>
+                    <td>{{ summary.silicone_bite.e_req }}</td>
+                    <td>{{ summary.silicone_bite.e_pro }}</td>
+                    <td class="{% if summary.silicone_bite.t_pro > summary.silicone_bite.t_req and summary.silicone_bite.e_pro > summary.silicone_bite.e_req %}ok{% else %}not-ok{% endif %}">
+                        {% if summary.silicone_bite.t_pro > summary.silicone_bite.t_req and summary.silicone_bite.e_pro > summary.silicone_bite.e_req %} OK {% else %} NOT OK {% endif %}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>Sound Transmission Class</h3>
+        <table class="table__50">
+            <thead>
+                <th>Glass Density</th>
+                <th>Approx. STC (dB)</th>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{ summary.stc.density }}</td>
+                    <td>{{ summary.stc.STC }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
+    <div class="abbr">
+        <div class="abbr__inner">
+            <h4>Where,</h4>
+            <ul>
+                <li>NFL – Non-factored Load</li>
+                <li>GTF – Glass Type Factor</li>
+                <li>LR – Load Resistance</li>
+                <li>P<sub>z</sub> – Wind Load</li>
+                <li>r<sub>0</sub>, r<sub>1</sub>, r<sub>2</sub>, x – Deflection coefficient</li>
+                <li>δ – Deflection</li>
+                <li>δ<sub>a</sub> – Allowable Deflection</li>
+                <li>B – Load / Glass Width</li>
+                <li>F<sub>s</sub> – Design strength of silicone</li>
+                <li>t<sub>r</sub> – Required silicone bite thickness</li>
+                <li>t<sub>p</sub> – Provided silicone bite thickness</li>
+                <li>e<sub>r</sub> – Required glue line thickness</li>
+                <li>e<sub>p</sub> – Provided glue line thickness</li>
+            </ul>
+        </div>
+    </div>
+</div>

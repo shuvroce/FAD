@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wind Load Report</title>
+    <script src="js/paged.polyfill.js"></script>
+
+    <link rel="stylesheet" href="css/katex.min.css">
+    <link rel="stylesheet" href="css/report.css">
+</head>
+
+<body>
+    <!-- ====== Header & Footer ======== -->
+    {% include "base.html" %}
+
+    <section class="indi__front">
+        <h1>
+            Wind Pressure Calculation
+        </h1>
+    </section>
+
+    <section>
+        <h2>Wind Pressure for 'MWFRS'</h2>
+        <div>
+            <p class="ml-1">
+                <i><b>p = qGC<sub>p</sub> - q<sub>i</sub>(GC<sub>pi</sub>)</b> (kN/m<sup>2</sup>)</i>
+            </p>
+            <p><u>Where,</u><br>
+            <p class="ml-2">
+                q = q<sub>z</sub> for windward walls evaluated at height z above the ground</br>
+                q = q<sub>h</sub> for leeward walls, side walls, and roofs, evaluated at height h</br>
+                q<sub>i</sub> = q<sub>h</sub> for windward walls, side walls, leeward walls, and roofs of enclosed buildings 
+                                and for negative internal pressure evaluation in partially enclosed buildings.</br>
+                G = Gust effect factor from Sec 2.4.8, BNBC 2020</br>
+                C<sub>p</sub> = External pressure coefficient from Figure 6.2.6, BNBC 2020</br>
+                GC<sub>pi</sub> = Internal pressure coefficient from Figure 6.2.5, BNBC 2020
+            </p>
+
+            <p><b>Velocity pressure, q<sub>z</sub> evaluated at height z shall be calculated by the following
+                    equations:</b></p>
+            <p class="ml-1">
+                <i><b>q<sub>z</sub> = 0.000613 K<sub>z</sub> K<sub>zt</sub> K<sub>d</sub> V<sup>2</sup> I</b>
+                (kN/m<sup>2</sup>)</i>
+            </p>
+
+            <p class="ml-1">
+                <u>Where,</u><br>
+                <p class="ml-2">
+                    K<sub>z</sub> = Velocity pressure exposure coefficient defined in Sec 2.4.6.6, BNBC 2020<br>
+                    K<sub>zt</sub> = Topographic factor defined in Sec 2.4.7.2, BNBC 2020<br>
+                    K<sub>d</sub> = Wind directionality factor<br>
+                    V = Basic wind speed (m/s)<br>
+                    I = Importance factor
+                </p>
+            </p>
+        </div>
+
+        <div>
+            <table class="width__100">
+                <caption>Wind load parameters</caption>
+                <thead>
+                    <tr>
+                        <th>Parameters</th>
+                        <th>Values</th>
+                        <th>References</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Building type</td>
+                        <td>{{ summary.params.enclosure_type }}, {{ summary.params.roof_type }} Roof</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Building height (Above GL), H</td>
+                        <td>{{ summary.params.b_height }}</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Width perpendicular to the wind direction, B </td>
+                        <td>{{ summary.params.b_length }}</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Width Parallel to the wind direction, L </td>
+                        <td>{{ summary.params.b_width }}</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Location</td>
+                        <td>{{ summary.params.location }}</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Basic Wind Speed, V </td>
+                        <td>{{ summary.params.wind_speed }}</td>
+                        <td><i>BNBC 2020, Table 6.2.8</i></td>
+                    </tr>
+                    <tr>
+                        <td>Exposure Category </td>
+                        <td>{{ summary.params.exposure_cat }}</td>
+                        <td class="footnote">
+                            {% if summary.params.exposure_note %}
+                                a
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Occupancy Category</td>
+                        <td>{{ summary.params.occupancy_cat }}</td>
+                        <td><i>
+                            BNBC 2020, Table 6.1.1
+                            <span class="footnote">
+                                {% if summary.params.occupancy_note %}
+                                    b
+                                {% endif %}
+                            </span> </i>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Importance factor, I</td>
+                        <td>{{ summary.params.Imp }}</td>
+                        <td><i>BNBC 2020, Table 6.2.9</i></td>
+                    </tr>
+                    <tr>
+                        <td>Wind Directionality factor, K<sub>d</sub></td>
+                        <td>{{ summary.params.K_d }}</td>
+                        <td><i>BNBC 2020, Table 6.2.12</i></td>
+                    </tr>
+
+                    {% if summary.params.topography_type == "Homogeneous" %}
+                    <tr>
+                        <td>Topographic factor, K<sub>zt</sub></td>
+                        <td>1.0</td>
+                        <td class="footnote">c</td>
+                    </tr>
+                    {% endif %}
+                    
+                    <tr>
+                        <td>Gust factor, G</td>
+                        <td>{{ summary.params.gust_factor }}</td>
+                        
+                        {% if summary.params.b_rigidity == "Flexible" %}
+                            <td class="footnote">d</td>
+                        {% else %}
+                            <td><i>; Rigid structure</i></td>
+                        {% endif %}
+                    </tr>
+                    <tr>
+                        <td>Internal Pressure Cofficient, GC<sub>pi</sub></td>
+                        <td>± {{ summary.params.GC_pi }}</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Velocity Pressure, q<sub>z</sub></td>
+                        <td>{{ summary.params.q_zk }} <i>K<sub>z</sub> K<sub>zt</sub></i></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        {% if summary.params.exposure_note %}
+            <div class="page__break_avoid">
+                <p><span class="footnote">a </span><u>Exposure Category:</u></p>
+                <p>
+                    {{ summary.params.exposure_note }}
+                </p>
+            </div>
+        {% endif %}
+
+        {% if summary.params.occupancy_note %}
+            <div>
+                <p><span class="footnote">b </span>{{ summary.params.occupancy_note }}</p>
+            </div>
+        {% endif %}
+
+        {% if summary.params.topography_note %}
+            <div>
+                <p><span class="footnote">c </span>{{ summary.params.topography_note }}</p>
+            </div>
+        {% else %}
+            <div>
+                {% if summary.params.topography_type == "Homogeneous" %}
+                    <p><span class="footnote">c </span>Homogeneous topographies, not in hilly region. No significant effect of topography.</p>
+                {% else %}
+                    <p><u>Topographic Factor:</u></p>
+                    <p>The structure is located in a hilly region. Topograpic factor is calculated as per Fig. 6.2.4, BNBC 2020, using the following information:</p>
+                    <table class="borderless width__70 ml-2">
+                        <tbody>
+                            <tr>
+                                <td>Topographic feature Type</td>
+                                <td>=</td>
+                                <td>{{ summary.params.topography_type }}</td>
+                            </tr>
+                            <tr>
+                                <td>Building site direction from crest</td>
+                                <td>=</td>
+                                <td>{{ summary.params.topo_crest_side }}</td>
+                            </tr>
+                            <tr>
+                                <td>Topographic feature Height, H</td>
+                                <td>=</td>
+                                <td>{{ summary.params.topo_height }} m</td>
+                            </tr>
+                            <tr>
+                                <td>Distance, L<sub>h</sub></td>
+                                <td>=</td>
+                                <td>{{ summary.params.topo_length }} m</td>
+                            </tr>
+                            <tr>
+                                <td>Distance from crest to building site, X</td>
+                                <td>=</td>
+                                <td>{{ summary.params.topo_distance }} m</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                {% endif %}
+            </div>
+        {% endif %}
+
+        {% if summary.params.b_rigidity == "Flexible" %}
+            <div class="page__break_avoid mt-1">
+                <span class="footnote">d </span>
+                <u>Gust effect factor:</u>
+                <table class="borderless width__100 ml-2">
+                    <tr>
+                        <td style="width: 13rem;">Approx. Natural frequency, f<sub>n1</sub></td>
+                        <td style="width: 0.5rem;">=</td>
+                        <td style="width: 1.5rem;">{{ summary.params.b_freq }}</td>
+                        <td style="width: 1.5rem;"><i>Hz</i></td>
+                        <td>< 1 → flexible structure</td>
+                    </tr>
+                    <tr>
+                        <td>Damping ratio</td>
+                        <td>=</td>
+                        <td>{{ summary.params.damping }}</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>Therefore, Gust effect factor, G</td>
+                        <td>=</td>
+                        <td>{{ summary.params.gust_factor }}</td>
+                        <td></td>
+                    </tr>
+                </table>
+            </div>
+        {% endif %}
+
+        <div class="mt-2">
+            <table class="width__50">
+                <caption>External Wall Pressure Coefficient</caption>
+                <thead>
+                    <tr>
+                        <th>Surface</th>
+                        <th>L/B</th>
+                        <th>C<sub>p</sub></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Windward Wall</td>
+                        <td>All</td>
+                        <td>0.8</td>
+                    </tr>
+                    <tr>
+                        <td>Side Wall</td>
+                        <td>All</td>
+                        <td>- 0.7</td>
+                    </tr>
+                    <tr>
+                        <td>Leeward Wall</td>
+                        <td>{{ summary.params.b_aspect_ratio }}</td>
+                        <td>{{ summary.params.C_pl }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="page__break">
+            {% if summary.mwfrs %}
+                <div class="table__summary">
+                    <h3>Design Wind Pressure</h3>
+                    <p><span>at height h:</span></p>
+                    <table class="borderless table__70">
+                        <tbody>
+                            <tr>
+                                <td>Velocity pressure coefficient, K<sub>h</sub></td>
+                                <td>=</td>
+                                <td>{{ summary.mwfrs.mwfrs_h.K_h }}</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>Topography factor, K<sub>ht</sub></td>
+                                <td>=</td>
+                                <td>{{ summary.mwfrs.mwfrs_h.K_ht }}</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>Velocity pressure, q<sub>h</sub></td>
+                                <td>=</td>
+                                <td>{{ summary.mwfrs.mwfrs_h.q_h }}</td>
+                                <td><i>kN/m<sup>2</sup></i></td>
+                            </tr>
+                            <tr>
+                                <td>Internal pressure, P<sub>hi</sub></td>
+                                <td>=</td>
+                                <td>{{ summary.mwfrs.mwfrs_h.P_hi }}</td>
+                                <td><i>kN/m<sup>2</sup></i></td>
+                            </tr>
+                            <tr>
+                                <td>Leeward pressure, P<sub>hl</sub></td>
+                                <td>=</td>
+                                <td>{{ summary.mwfrs.mwfrs_h.P_hl }}</td>
+                                <td><i>kN/m<sup>2</sup></i></td>
+                            </tr>
+                            <tr>
+                                <td>Sidewall pressure, P<sub>hs</sub></td>
+                                <td>=</td>
+                                <td>{{ summary.mwfrs.mwfrs_h.P_hs }}</td>
+                                <td><i>kN/m<sup>2</sup></i></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <table class="width__100 align__center">
+                    <caption>
+                        Wind pressure at different height z
+                    </caption>
+                    <thead>
+                        <tr>
+                            <th>Level</th>
+                            <th>Floor Ht. <i>(m)</i></th>
+                            <th>Cumu. Ht. <i>(m)</i></th>
+                            <th><i>K<sub>z</sub></i></th>
+                            <th><i>K<sub>zt</sub></i></th>
+                            <th>Velocity Pressure, <i>q<sub>z</sub> (kN/m<sup>2</sup>)</i></th>
+                            <th>Windward Pressure <i>(kN/m<sup>2</sup>)</i></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in summary.mwfrs.mwfrs_z %}
+                            <tr>
+                                <td>{{ row.level }}</td>
+                                <td>{{ row.height }}</td>
+                                <td>{{ row.cumu_height }}</td>
+                                <td>{{ row.K_z }}</td>
+                                <td>{{ row.K_zt }}</td>
+                                <td>{{ row.q_z }}</td>
+                                <td>{{ row.P_zw }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% endif %}
+
+            <!-- Parapet -->
+            {% if summary.parapet.height != 0 %}
+            <table class="mwfrs">
+                <caption>
+                    Wind Pressure for Parapet
+                </caption>
+                <thead>
+                    <tr>
+                        <th>Level</th>
+                        <th>Height (m)</th>
+                        <th>Cumu Ht. (m)</th>
+                        <th>K<sub>p</sub></th>
+                        <th>K<sub>pt</sub></th>
+                        <th>Velocity Pressure, q<sub>p</sub> (kN/m<sup>2</sup>)</th>
+                        <th>Windward Pressure, P<sub>pw</sub> (kN/m<sup>2</sup>)</th>
+                        <th>Leeward Pressure, P<sub>pl</sub> (kN/m<sup>2</sup>)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Parapet</td>
+                        <td>{{ summary.parapet.height }}</td>
+                        <td>{{ summary.parapet.cumu_height }}</td>
+                        <td>{{ summary.parapet.K_p }}</td>
+                        <td>{{ summary.parapet.K_pt }}</td>
+                        <td>{{ summary.parapet.q_p }}</td>
+                        <td>{{ summary.parapet.P_pw }}</td>
+                        <td>{{ summary.parapet.P_pl }}</td>
+                    </tr>
+                </tbody>
+            </table>
+            {% endif %}
+        </div>
+    </section>
+
+
+    <section class="page__break">
+        <h2>Wind Pressure for Components and Cladding (C&C)</h2>
+
+        <div>
+            <p class="ml-1">
+                <i><b>p = q(GC<sub>p</sub>) - q<sub>i</sub>(GC<sub>pi</sub>)</b> (kN/m<sup>2</sup>)</i>
+            </p>
+            <p><u>Where,</u><br>
+            <p class="ml-2">
+                q = q<sub>z</sub> for windward walls evaluated at height z above the ground</br>
+                q = q<sub>h</sub> leeward walls, side walls, and roofs, evaluated at height h</br>
+                q<sub>i</sub> = q<sub>h</sub> for windward walls, side walls, leeward walls, and roofs
+                            of enclosed buildings and for negative internal pressure evaluation in partially enclosed
+                            buildings. For positive internal pressure evaluation, q<sub>i</sub> may conservatively be
+                            evaluated at height h (q<sub>i</sub> = q<sub>h</sub>)</br>
+                <i>GC<sub>p</sub></i> = External pressure coefficient from Figure 6.2.17, BNBC 2020</br>
+                <i>GC<sub>pi</sub></i> = Internal pressure coefficient from Figure 6.2.5, BNBC 2020
+            </p>
+        </div>
+
+        <div class="table__sidewise width__100 mt-2">
+            <div class="width__100">
+                <table class="align__center width__100">
+                    <caption>GC<sub>p</sub> for Wall Componets</caption>
+                    <thead>
+                        <tr>
+                            <th rowspan="2">Eff. Area <span class="footnote">1</span></th>
+                            <th>+ GC<sub>p</sub></th>
+                            <th colspan="2">- GC<sub>p</sub></th>
+                        </tr>
+                        <tr>
+                            <th>Zone 4 & 5</th>
+                            <th>Zone 4</th>
+                            <th>Zone 5</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>≤ 5</td>
+                            <td>0.81</td>
+                            <td>0.84</td>
+                            <td>1.56</td>
+                        </tr>
+                        <tr>
+                            <td>10</td>
+                            <td>0.74</td>
+                            <td>0.80</td>
+                            <td>1.38</td>
+                        </tr>
+                        <tr>
+                            <td>20</td>
+                            <td>0.68</td>
+                            <td>0.75</td>
+                            <td>1.21</td>
+                        </tr>
+                        <tr>
+                            <td>30</td>
+                            <td>0.64</td>
+                            <td>0.73</td>
+                            <td>1.11</td>
+                        </tr>
+                        <tr>
+                            <td>40</td>
+                            <td>0.60</td>
+                            <td>0.70</td>
+                            <td>1.00</td>
+                        </tr>
+                        <tr>
+                            <td>≥ 46.5</td>
+                            <td>0.60</td>
+                            <td>0.70</td>
+                            <td>1.00</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="width__100">
+                <table class="align__center width__100">
+                    <caption>GC<sub>p</sub> for Roof Componets</caption>
+                    <thead>
+                        <tr>
+                            <th colspan="3">- GC<sub>p</sub></th>
+                        </tr>
+                        <tr>
+                            <th>Zone 1</th>
+                            <th>Zone 2</th>
+                            <th>Zone 3</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1.18</td>
+                            <td>2.00</td>
+                            <td>2.81</td>
+                        </tr>
+                        <tr>
+                            <td>1.09</td>
+                            <td>1.87</td>
+                            <td>2.65</td>
+                        </tr>
+                        <tr>
+                            <td>1.01</td>
+                            <td>1.75</td>
+                            <td>2.49</td>
+                        </tr>
+                        <tr>
+                            <td>0.96</td>
+                            <td>1.68</td>
+                            <td>2.40</td>
+                        </tr>
+                        <tr>
+                            <td>0.92</td>
+                            <td>1.63</td>
+                            <td>2.33</td>
+                        </tr>
+                        <tr>
+                            <td>0.90</td>
+                            <td>1.60</td>
+                            <td>2.30</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div>
+            <p>
+                <sup>1</sup> Effective wind area as defined in Section 2.1.3, BNBC 2020.
+                For component and cladding elements, the effective wind area is the span length multiplied by
+                an effective width that need not be less than one-third the span length.
+                i.e., A = max(hb, h × h/3)
+            </p>
+        </div>
+
+        <div>
+            <figure class="ref__fig">
+                <img src="../images/cnc.png">
+                <figcaption>External pressure coefficient for C&C</figcaption>
+            </figure>
+        </div>
+        
+        
+        <div class="page__break">
+            {% for A_eff, rows in summary.cladding.wall.items() %}
+                <div page__break_avoid>
+                    {% if rows %}
+                    <table class="width__100 align__center mb-1">
+                        {% if A_eff == 5 %}
+                            <caption>
+                                C&C Wind pressure for wall components<br>
+                                <span class="table__note">For effective area ≤ 5 m<sup>2</sup></span>
+                            </caption>
+                        {% else %}
+                            <p class="table__note">For Effective area {{ A_eff }} m<sup>2</sup></p>
+                        {% endif %}
+                        <thead>
+                            <tr>
+                                <th rowspan="3">Level</th>
+                                <th rowspan="3" style="width: 4rem;">Height <i>(m)</i></th>
+                                <th rowspan="3"><i>K<sub>z</sub></i></th>
+                                <th rowspan="3"><i>K<sub>zt</sub></i></th>
+                                <th rowspan="3"><i>q<sub>z</sub></i></th>
+                                <th rowspan="3" style="width: 6rem;">Int. Pressure <i>(kN/m<sup>2</sup>)</i></th>
+                                <th colspan="3">Design Pressure <i>(kN/m<sup>2</sup>)</i></th>
+                            </tr>
+                            <tr>
+                                <th>+ Ve</th>
+                                <th colspan="2">- Ve</th>
+                            </tr>
+                            <tr>
+                                <th>Zone 4 & 5</th>
+                                <th>Zone 4</th>
+                                <th>Zone 5</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in rows %}
+                                <tr>
+                                    <td>{{ row.level }}</td>
+                                    <td>{{ row.height }}</td>
+                                    <td>{{ row.K_z }}</td>
+                                    <td>{{ row.K_zt }}</td>
+                                    <td>{{ row.q_z }}</td>
+                                    <td>{{ row.P_zi }}</td>
+                                    <td>{{ row.P_z4_pos }}</td>
+                                    <td>{{ row.P_z4_neg }}</td>
+                                    <td>{{ row.P_z5_neg }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% else %}
+                        <p>No Wall Cladding data available.</p>
+                    {% endif %}
+                </div>
+            {% endfor %}
+
+            <div>
+                <p>
+                    Zone 5 (Edge) width, a = Min<sup>m</sup> of (10% of least horizontal dimension, 0.4h);
+                    but not less than 0.9 m.
+                </p>
+            </div>
+
+            <div class="mt-2">
+                {% for A_eff, rows in summary.cladding.roof.items() %}
+                    {% if rows %}
+                    <table class="width__100 align__center mb-1">
+                        {% if A_eff == 5 %}
+                            <caption>
+                                C&C Wind pressure for roof components<br>
+                                <span class="table__note">For effective area ≤ 5 m<sup>2</sup></span>
+                            </caption>
+                        {% else %}
+                            <p class="table__note">For Effective area {{ A_eff }} m<sup>2</sup></p>
+                        {% endif %}
+                        
+                        <thead>
+                            <tr>
+                                <th rowspan="3">Level</th>
+                                <th rowspan="3" style="width: 4rem;">Height <i>(m)</i></th>
+                                <th rowspan="3"><i>K<sub>z</sub></i></th>
+                                <th rowspan="3"><i>K<sub>zt</sub></i></th>
+                                <th rowspan="3"><i>q<sub>z</sub></i></th>
+                                <th rowspan="3" style="width: 6rem;">Int. Pressure <i>(kN/m<sup>2</sup>)</i></th>
+                                <th colspan="3">Design Pressure <i>(kN/m<sup>2</sup>)</i></th>
+                            </tr>
+                            <tr>
+                                <th>+ Ve</th>
+                                <th colspan="3">- Ve</th>
+                            </tr>
+                            <tr>
+                                <th>Zone 1</th>
+                                <th>Zone 2</th>
+                                <th>Zone 3</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in rows %}
+                                <tr>
+                                    <td>{{ row.level }}</td>
+                                    <td>{{ row.height }}</td>
+                                    <td>{{ row.K_z }}</td>
+                                    <td>{{ row.K_zt }}</td>
+                                    <td>{{ row.q_z }}</td>
+                                    <td>{{ row.P_zi }}</td>
+                                    <td>{{ row.P_z1_neg }}</td>
+                                    <td>{{ row.P_z2_neg }}</td>
+                                    <td>{{ row.P_z3_neg }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <p>No Roof Cladding data available.</p>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+</body>
+
+</html>

@@ -1,0 +1,606 @@
+/* ========== Custom font ============ */
+@font-face {
+    font-family: 'Open Sans';
+    src: url(../../fonts/OpenSans-Regular.ttf);
+    font-weight: normal;
+}
+
+@font-face {
+    font-family: 'Open Sans';
+    src: url(../../fonts/OpenSans-Bold.ttf);
+    font-weight: bold;
+}
+
+@font-face {
+    font-family: 'Open Sans';
+    src: url(../../fonts/OpenSans-Italic.ttf);
+    font-weight: normal;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: 'Open Sans';
+    src: url(../../fonts/OpenSans-BoldItalic.ttf);
+    font-weight: bold;
+    font-style: italic;
+}
+
+
+* {
+    margin: 0;
+    padding: 0;
+    outline: 0;
+    border: 0;
+    appearance: none;
+    list-style: none;
+    text-decoration: none;
+    box-sizing: border-box;
+}
+
+body {
+    counter-reset: section tables figures;
+    font-family: 'Open Sans', sans-serif;
+    line-height: 1.8;
+    font-size: 10pt;
+}
+
+
+/* ========== General Heading Style, caption style etc. ========= */
+h1 {
+    counter-increment: section;
+    counter-reset: subsection subsubsection subsubsubsection tables figures;
+    string-set: chapter content(text);
+}
+
+h2 {
+    counter-increment: subsection;
+    counter-reset: subsubsection;
+}
+
+h3 {
+    counter-increment: subsubsection;
+    counter-reset: subsubsubsection;
+}
+
+h4 { counter-increment: subsubsubsection; }
+
+h1::before {
+    content: "Chapter " counter(section) ": ";
+    /* counter-reset: chapter 1; */
+}
+
+h2::before {
+    content: counter(section) "." counter(subsection) " ";
+}
+
+h3::before {
+    content: counter(section) "." counter(subsection) "." counter(subsubsection) " ";
+}
+
+h4::before {
+    content: counter(section) "." counter(subsection) "." counter(subsubsection) "." counter(subsubsubsection) " ";
+}
+
+/* ========= General Page Setup ========== */
+@page {
+    size: A4;
+    margin: 40mm 20mm 15mm 20mm;
+    bleed: 0;
+    /* marks: crop; */
+    /* font-size: 11pt; */
+
+    @top-center {
+        content: element(header);
+        vertical-align: bottom;
+        width: 100%;
+    }
+
+    @bottom-left {
+        content: "Chapter " counter(section) ": " string(chapter);
+        font-family: "Open Sans";
+        font-size: 8pt;
+        border-top: 1px solid black;
+        vertical-align: top;
+        width: 100%;
+    }
+
+    @bottom-right {
+        content: "Page " counter(page) " of " counter(pages);
+        font-family: "Open Sans";
+        font-size: 8pt;
+        border-top: 1px solid black;
+        vertical-align: top;
+        width: 100%;
+    }
+}
+
+/* Chapter Front Page */
+/* @page :first {
+    @bottom-left { content: none; }
+    @bottom-right { content: none; }
+} */
+
+.pagedjs_page .pagedjs_margin-top-center>.pagedjs_margin-content>* {
+    display: flex !important;
+}
+
+
+/* Frontmatter (ToC, LoF, LoT) */
+.frontmatter {
+    page: frontmatter;
+    break-after: always;
+    counter-reset: page 2;
+}
+
+@page frontmatter {
+    @bottom-right {
+        content: counter(page, lower-roman);
+    }
+}
+
+/* Cover Page */
+@page frontmatter :first {
+    @top-center {
+        content: element(coverheader);
+    }
+
+    @bottom-left { content: none; }
+    @bottom-right { content: none; }
+}
+
+
+/* Page break anywhere before starting any section */
+.page__break {
+    break-before: always;
+}
+
+/* Prevent breaking inside headings, tables, figures */
+h1, h2, h3, h4, h5, table, figure {
+    break-inside: avoid;
+}
+
+.page__break_avoid {
+    break-inside: avoid;
+} 
+
+/* table, figure, caption, headings etc page break avoid */
+h2, h3, h4, h5, caption {
+    break-after: avoid;
+    /* string-set: footer content(); */
+}
+
+figcaption {
+    break-before: avoid;
+}
+
+table p {
+    break-after: avoid;
+}
+
+
+/* ================ Cross References, Footnotes =============== */
+a.crossref {
+    color: inherit;
+    text-decoration: underline dotted;
+}
+
+.footnote {
+    font-size: 8pt;
+    vertical-align: super;
+}
+
+.footnote__content {
+    font-size: 8pt;
+    border-top: 0.5px solid #aaa;
+    margin-top: 1rem;
+    padding-top: 0.5rem;
+}
+
+
+
+/* ============== General Style ============= */
+h1, h2, h3 { text-transform: uppercase; }
+h4, h5 { text-transform: capitalize; }
+
+h1 {
+    font-size: 24pt;
+}
+
+h2 {
+    font-size: 12pt;
+    margin-top: 0.5rem;
+}
+
+h3, h4 {
+    font-size: 11pt;
+    margin-top: 1rem;
+    margin-bottom: 0.4rem;
+    text-decoration: underline;
+    text-underline-offset: 0.2rem;
+    font-style: italic;
+}
+
+p {
+    margin-top: 0.7rem;
+    text-align: justify;
+}
+
+u {
+    text-decoration: underline;
+    text-underline-offset: 0.2rem;
+}
+
+.ref__fig {
+    width: 150mm;
+    object-fit: contain;
+    overflow: hidden;
+    margin: 0.5rem auto;
+}
+
+.ref__fig img {
+    display: block;
+    margin: 0.5rem auto;
+    border: 2px dashed black;
+    padding: 0.1rem;
+    width: 100%;
+}
+
+.calc__fig {
+    width: 140mm;
+    object-fit: contain;
+    overflow: hidden;
+    margin: 0.3rem auto;
+    margin-bottom: 1rem;
+}
+
+.calc__fig img {
+    display: block;
+    margin: 0.1rem auto;
+    /* padding: 0.1rem; */
+    width: 100%;
+}
+
+.calc__fig2 {
+    width: 100mm;
+    object-fit: contain;
+    overflow: hidden;
+    margin: 0.3rem auto;
+    margin-bottom: 1rem;
+}
+
+.calc__fig2 img {
+    display: block;
+    margin: 0.1rem auto;
+    /* padding: 0.1rem; */
+    width: 100%;
+}
+
+.calc__fig3 {
+    width: 150mm;
+    object-fit: contain;
+    overflow: hidden;
+    margin: 0.3rem auto;
+    margin-bottom: 1rem;
+}
+
+.calc__fig3 img {
+    display: block;
+    margin: 0.1rem auto;
+    /* padding: 0.1rem; */
+    width: 100%;
+}
+
+.dgu__head {
+    font-weight: bold;
+    text-decoration: underline;
+    text-underline-offset: 0.2rem;
+    break-after: avoid;
+}
+
+.ml-1 { margin-left: 1rem; }
+.ml-2 { margin-left: 2rem; }
+.mt-1 { margin-top: 1rem; }
+.mt-2 { margin-top: 2rem; }
+.mb-1 { margin-bottom: 1rem; }
+.mb-2 { margin-bottom: 2rem; }
+
+.width__40 { width: 40%; }
+.width__50 { width: 50%; }
+.width__60 { width: 60%; }
+.width__70 { width: 70%; }
+.width__80 { width: 80%; }
+.width__90 { width: 90%; }
+.width__100 { width: 100%; }
+
+
+/* ============== Table and figure =================== */
+figcaption {
+    counter-increment: figures;
+    font-style: italic;
+    text-align: center;
+    caption-side: bottom;
+}
+
+figcaption::before {
+    content: "Figure " counter(section) "." counter(figures) " – ";
+}
+
+caption {
+    counter-increment: tables;
+    font-weight: bold;
+    caption-side: top;
+    text-align: left;
+}
+
+caption::before {
+    content: "Table " counter(section) "." counter(tables) " – ";
+}
+
+th {
+    word-wrap: break-word;
+    /* word-break: break-word; */
+}
+
+table {
+    margin-bottom: 1rem;
+}
+
+table, th, td, tr {
+    border: 1px solid black;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+th, td {
+    padding: 0 0.35rem;
+}
+
+table.head__gray th {
+    background-color: #f3f3f3;
+}
+
+table.head__gray tr:nth-child(odd) {
+    background-color: #f3f3f3;
+}
+
+table.borderless, table.borderless * {
+    border: none !important;
+}
+
+table.eqn td {
+    padding: 0.2rem;
+}
+
+table.width__40 { width: 40%; }
+table.width__50 { width: 50%; }
+table.width__60 { width: 60%; }
+table.width__70 { width: 70%; }
+table.width__80 { width: 80%; }
+table.width__90 { width: 90%; }
+table.width__100 { width: 100%; }
+
+table.align__center * { text-align: center !important; }
+table.align__center caption { text-align: left !important; }
+
+.table__sidewise {
+    display: flex;
+    gap: 1rem;
+    width: 100%;
+}
+
+.table__note {
+    font-weight: normal;
+    padding-top: 0.7rem;
+    break-after: avoid;
+}
+
+
+.table__summary {
+    margin-bottom: 1rem;
+}
+
+.table__summary span {
+    font-weight: bold;
+    font-style: italic;
+    text-decoration: underline;
+    text-underline-offset: 0.3rem;
+}
+
+/* =========== Header & Footer =========== */
+.cover__header {
+    position: running(coverheader);
+    display: flex;
+    border-bottom: 1px solid black;
+    font-size: 8pt;
+    font-weight: bold;
+    justify-content: space-between;
+    padding-bottom: 0.2rem;
+    text-transform: uppercase;
+}
+
+.page__header {
+    position: running(header);
+    display: flex;
+    gap: 1rem;
+    border-bottom: 1px solid black;
+    font-size: 9pt;
+    font-weight: bold;
+    justify-content: space-between;
+    padding-bottom: 0.2rem;
+    margin-bottom: 0.5rem;
+    align-items: flex-end;
+}
+
+.page__header p { margin-top: 0; }
+
+.page__header_left {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+}
+
+.page__header_title {
+    text-transform: uppercase;
+    font-size: 10pt;
+    padding-bottom: 0.1rem;
+}
+
+.page__header_logo {
+    width: 9rem;
+    height: 3rem;
+    overflow: hidden;
+}
+
+.page__header_logo img {
+    /* width: 8rem; */
+    height: 3rem;
+}
+
+.page__header_web a {
+    text-decoration: none;
+    color: black;
+    /* font-size: 9pt; */
+    font-weight: normal;
+}
+
+.page__header_right {
+    display: flex;
+    flex-direction: column;
+    margin-top: 1.5rem;
+}
+
+.page__header_right p {
+    text-align: right;
+}
+
+
+
+/* ============ Cover Page ============= */
+.cover__page_title h1 {
+    text-transform: uppercase;
+    /* text-align: center; */
+    margin-top: 4.5rem;
+    margin-bottom: 2rem;
+}
+
+.cover__page_rev p {
+    font-weight: bold;
+    font-size: 14pt;
+}
+
+.cover__page_date {
+    margin-top: 30%;
+}
+
+.cover__page_info {
+    margin-top: 4rem;
+}
+
+.cover__page_info img {
+    width: 6rem;
+}
+
+
+/* ========== Chapter Front Page ============ */
+.chapter__front {
+    page: chapterfront;
+    break-after: always;
+    text-align: center;
+    margin-top: 100mm;
+    text-transform: uppercase;
+}
+
+@page chapterfront {
+    @bottom-left { content: none; }
+    @bottom-right { content: none; }
+}
+
+.indi__front h1 {
+    visibility: hidden;
+    font-size: 0;
+}
+
+
+/* ============== Frontmatter Pages ============== */
+.contents__toc p, .contents__lof p, .contents__lot p {
+    text-transform: uppercase;
+    font-weight: bold;
+    text-decoration: underline;
+    text-underline-offset: 0.25rem;
+    font-size: 12pt;
+    text-align: center;
+    margin-top: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.contents__toc h1 {
+    text-transform: uppercase;
+    font-size: 10pt;
+}
+
+.contents__toc h2 {
+    font-size: 9pt;
+    font-weight: normal;
+    text-transform: uppercase;
+    margin-left: 2rem;
+}
+
+
+
+/* == Document preparation records == */
+.contents__records p {
+    text-transform: uppercase;
+    font-weight: bold;
+    padding: 0.5rem 0;
+}
+
+.contents__records table {
+    margin: 0 auto;
+    width: 90%;
+}
+
+.contents__records table, .contents__records th, .contents__records td {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+
+.contents__records table thead {
+    font-weight: bold;
+    text-align: center;
+}
+
+.contents__records table tbody {
+    text-align: center;
+}
+
+.contents__records table tbody span {
+    font-size: 8pt;
+}
+
+
+
+
+
+
+
+.ok {
+    color: green;
+    font-weight: bold;
+    text-decoration: underline;
+    text-underline-offset: 0.2rem;
+}
+
+.not-ok {
+    color: red;
+    font-weight: bold;
+    text-decoration: underline;
+    text-underline-offset: 0.2rem;
+}
+
+.list__bullet li {
+    list-style-type: circle;
+    padding-left: 2rem;
+}
+
+
+

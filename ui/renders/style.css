@@ -1,0 +1,140 @@
+@font-face {
+    font-family: "Open Sans";
+    src: url(../assets/fonts/OpenSans-Regular.ttf);
+    font-weight: normal;
+}
+
+@font-face {
+    font-family: "Open Sans";
+    src: url(../assets/fonts/OpenSans-Bold.ttf);
+    font-weight: bold;
+}
+
+@font-face {
+    font-family: "Open Sans";
+    src: url(../assets/fonts/OpenSans-Italic.ttf);
+    font-style: italic;
+}
+
+body {
+    font-family: "Open Sans", Arial, sans-serif;
+    font-size: 0.9rem;
+    margin: 1rem;
+    background-color: #fff;
+    margin-bottom: 3rem;
+}
+
+h2 {
+    font-size: 1.3rem;
+    color: #001326;
+    text-align: left;
+    margin-top: 1.5rem;
+}
+
+h3 {
+    font-size: 11pt;
+    font-weight: bold;
+    color: #001326;
+    margin-bottom: 0.2rem;
+}
+
+h4 {
+    font-size: 0.9rem;
+    font-weight: bold;
+    margin-bottom: 0.2rem;
+}
+
+table {
+    border-collapse: collapse;
+    margin-top: 0;
+}
+
+table.borderless, table.borderless * {
+    border: none !important;
+    background-color: #fff !important;
+    text-align: left;
+
+}
+
+table.mwfrs {
+    width: 65%;
+    margin-bottom: 3.5rem;
+}
+
+table.cnc {
+    width: 65%;
+}
+
+table.glass {
+    width: 100%;
+    margin-bottom: 1.5rem;
+}
+
+table.glass tr:nth-child(even) {
+    background-color: #fff;
+}
+
+table.glass tr:hover {
+    background-color: #fff;
+}
+
+table.table__50 {
+    width: 50%;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 5px 8px;
+    text-align: center;
+}
+
+th {
+    font-weight: bold;
+    background-color: #efefef;
+    color: #000;
+    /* word-wrap: break-word; */
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+tr:hover {
+    background-color: #ddd;
+}
+
+p {
+    text-align: left;
+    color: #323232;
+}
+
+.glass__output {
+    display: flex;
+    gap: 2rem;
+}
+
+.result__left {
+    margin-right: 3rem;
+    flex: 4;
+}
+
+.abbr {
+    flex: 3;
+    padding-left: 1rem;
+    margin-top: 1rem;
+}
+
+.abbr__inner {
+    border-left: 1px solid #ddd;
+    padding: 0 1rem 0.2rem 0.6rem;
+}
+
+.ok {
+        color: green;
+        font-weight: bold;
+    }
+
+.not-ok {
+    color: red;
+    font-weight: bold;
+}

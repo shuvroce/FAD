@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Wind Load Results</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    {% if summary %}
+        {% if composition == "Single Glaze Unit (SGU)" %}
+            <h2>SGU Glass Design Results</h2>
+            {% include "glass_sgu.html" %}
+
+        {% elif composition == "Double Glaze Unit (DGU)" %}
+            <h2>DGU Glass Design Results</h2>
+            {% include "glass_dgu.html" %}
+
+        {% elif composition == "Laminated Glaze Unit (LGU)" %}
+            <h2>LGU Glass Design Results</h2>
+            {% include "glass_lgu.html" %}
+
+        {% elif composition == "Laminated Double Glaze Unit (LDGU)" %}
+            <h2>LDGU Glass Design Results</h2>
+            {% include "glass_ldgu.html" %}
+        {% endif %}
+    {% else %}
+        <p>No data available.</p>
+    {% endif %}
+
+</body>
+</html>

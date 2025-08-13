@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Wind Load Results</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- MWFRS -->
+    <h2>Wind Pressure for MWFRS</h2>
+    {% if summary.mwfrs %}
+        <div>
+            <p><b>At height h :</b></p>
+            <ul>
+                <li>Velocity pressure coefficient, K<sub>h</sub> = {{ summary.mwfrs.mwfrs_h.K_h }}</li>
+                <li>Topography factor, K<sub>ht</sub> = {{ summary.mwfrs.mwfrs_h.K_ht }}</li>
+                <li>Velocity pressure, q<sub>h</sub> = {{ summary.mwfrs.mwfrs_h.q_h }} <i>kN/m<sup>2</sup></i></li>
+                <li>Internal pressure, P<sub>hi</sub> = {{ summary.mwfrs.mwfrs_h.P_hi }} <i>kN/m<sup>2</sup></i></li>
+                <li>Leeward pressure, P<sub>hl</sub> = {{ summary.mwfrs.mwfrs_h.P_hl }} <i>kN/m<sup>2</sup></i></li>
+                <li>Sidewall pressure, P<sub>hs</sub> = {{ summary.mwfrs.mwfrs_h.P_hs }} <i>kN/m<sup>2</sup></i></li>
+            </ul>
+        </div>
+
+        <p><b>Wind pressure at different height z :</b></p>
+        <table class="mwfrs">
+            <thead>
+                <tr>
+                    <th>Level</th>
+                    <th>Height (m)</th>
+                    <th>Cumu Ht. (m)</th>
+                    <th>K<sub>z</sub></th>
+                    <th>K<sub>zt</sub></th>
+                    <th>Velocity Pressure, q<sub>z</sub> (kN/m<sup>2</sup>)</th>
+                    <th>Windward Pressure, P<sub>zw</sub> (kN/m<sup>2</sup>)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in summary.mwfrs.mwfrs_z %}
+                    <tr>
+                        <td>{{ row.level }}</td>
+                        <td>{{ row.height }}</td>
+                        <td>{{ row.cumu_height }}</td>
+                        <td>{{ row.K_z }}</td>
+                        <td>{{ row.K_zt }}</td>
+                        <td>{{ row.q_z }}</td>
+                        <td>{{ row.P_zw }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+
+
+    <!-- Parapet -->
+    {% if summary.parapet.height != 0 %}
+    <h2>Wind Pressure for Parapet</h2>
+    <table class="mwfrs">
+        <thead>
+            <tr>
+                <th>Level</th>
+                <th>Height (m)</th>
+                <th>Cumu Ht. (m)</th>
+                <th>K<sub>p</sub></th>
+                <th>K<sub>pt</sub></th>
+                <th>Velocity Pressure, q<sub>p</sub> (kN/m<sup>2</sup>)</th>
+                <th>Windward Pressure, P<sub>pw</sub> (kN/m<sup>2</sup>)</th>
+                <th>Leeward Pressure, P<sub>pl</sub> (kN/m<sup>2</sup>)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Parapet</td>
+                <td>{{ summary.parapet.height }}</td>
+                <td>{{ summary.parapet.cumu_height }}</td>
+                <td>{{ summary.parapet.K_p }}</td>
+                <td>{{ summary.parapet.K_pt }}</td>
+                <td>{{ summary.parapet.q_p }}</td>
+                <td>{{ summary.parapet.P_pw }}</td>
+                <td>{{ summary.parapet.P_pl }}</td>
+            </tr>
+        </tbody>
+    </table>
+    {% endif %}
+
+
+    <!-- Wall Cladding -->
+    <h2>Cladding Pressure for Wall Components</h2>
+    {% for A_eff, rows in summary.cladding.wall.items() %}
+        <h4>For Effective area {{ A_eff }} m<sup>2</sup></h4>
+        {% if rows %}
+        <table class="cnc">
+            <thead>
+                <tr>
+                    <th rowspan="3">Level</th>
+                    <th rowspan="3" style="width: 4rem;">Height (m)</th>
+                    <th rowspan="3">K<sub>z</sub></th>
+                    <th rowspan="3">K<sub>zt</sub></th>
+                    <th rowspan="3" style="width: 2rem;">Velocity Pressure, q<sub>z</sub></th>
+                    <th rowspan="3" style="width: 6rem;">Int. Pressure (kN/m<sup>2</sup>)</th>
+                    <th colspan="3">Design Pressure (kN/m<sup>2</sup>)</th>
+                </tr>
+                <tr>
+                    <th>+ Ve</th>
+                    <th colspan="2">- Ve</th>
+                </tr>
+                <tr>
+                    <th>Zone 4 & 5</th>
+                    <th>Zone 4</th>
+                    <th>Zone 5</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in rows %}
+                    <tr>
+                        <td>{{ row.level }}</td>
+                        <td>{{ row.height }}</td>
+                        <td>{{ row.K_z }}</td>
+                        <td>{{ row.K_zt }}</td>
+                        <td>{{ row.q_z }}</td>
+                        <td>{{ row.P_zi }}</td>
+                        <td>{{ row.P_z4_pos }}</td>
+                        <td>{{ row.P_z4_neg }}</td>
+                        <td>{{ row.P_z5_neg }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+            <p>No Wall Cladding data available.</p>
+        {% endif %}
+    {% endfor %}
+
+
+    <!-- Roof Cladding -->
+    <h2 style="margin-top: 4rem;">Cladding Pressure for Roof Components</h2>
+    {% for A_eff, rows in summary.cladding.roof.items() %}
+        <h4>For Effective area {{ A_eff }} m<sup>2</sup></h4>
+        {% if rows %}
+        <table class="cnc">
+            <thead>
+                <tr>
+                    <th rowspan="3">Level</th>
+                    <th rowspan="3" style="width: 4rem;">Height (m)</th>
+                    <th rowspan="3">K<sub>z</sub></th>
+                    <th rowspan="3">K<sub>zt</sub></th>
+                    <th rowspan="3" style="width: 2rem;">Velocity Pressure, q<sub>z</sub></th>
+                    <th rowspan="3" style="width: 6rem;">Int. Pressure (kN/m<sup>2</sup>)</th>
+                    <th colspan="3">Design Pressure (kN/m<sup>2</sup>)</th>
+                </tr>
+                <tr>
+                    <th>+ Ve</th>
+                    <th colspan="3">- Ve</th>
+                </tr>
+                <tr>
+                    <th>Zone 1</th>
+                    <th>Zone 2</th>
+                    <th>Zone 3</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in rows %}
+                    <tr>
+                        <td>{{ row.level }}</td>
+                        <td>{{ row.height }}</td>
+                        <td>{{ row.K_z }}</td>
+                        <td>{{ row.K_zt }}</td>
+                        <td>{{ row.q_z }}</td>
+                        <td>{{ row.P_zi }}</td>
+                        <td>{{ row.P_z1_neg }}</td>
+                        <td>{{ row.P_z2_neg }}</td>
+                        <td>{{ row.P_z3_neg }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+            <p>No Roof Cladding data available.</p>
+        {% endif %}
+    {% endfor %}
+
+</body>
+</html>

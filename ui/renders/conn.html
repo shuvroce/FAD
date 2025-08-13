@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Wind Load Results</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+{% if summary %}
+    <h2>Connection Design Results</h2>
+    <div>
+        <h3>Load Analysis</h3>
+        <table class="borderless">
+            <tbody>
+                <tr>
+                    <td>Factored wind load reaction, <i>F<sub>y</sub></i></td>
+                    <td>=</td>
+                    <td>{{ summary.params.factored_fy }}</td>
+                    <td><i>; 1.6x</i></td>
+                </tr>
+                <tr>
+                    <td>Factored dead load reaction, <i>F<sub>z</sub></i></td>
+                    <td>=</td>
+                    <td>{{ summary.params.factored_fz }}</td>
+                    <td><i>; 1.2x</i></td>
+                </tr>
+                <tr>
+                    <td>No. of screw per side, n</td>
+                    <td>=</td>
+                    <td>{{ summary.params.n }}</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>For screw A1 & A2 (transom), <i>R<sub>yA</sub> = F<sub>y</sub>/n</i></td>
+                    <td>=</td>
+                    <td>{{ summary.params.R_ya }} <i>kN</i></td>
+                    <td><i>; Shear</i></td>
+                </tr>
+                <tr>
+                    <td style="text-align: right;">and, <i>R<sub>zA</sub> = F<sub>z</sub>/n</i></td>
+                    <td>=</td>
+                    <td>{{ summary.params.R_za }} <i>kN</i></td>
+                    <td><i>; Tension</i></td>
+                </tr>
+                <tr>
+                    <td>For screw B1 & B2 (mullion), <i>R<sub>yB</sub> = F<sub>y</sub>/n</i></td>
+                    <td>=</td>
+                    <td>{{ summary.params.R_yb }} <i>kN</i></td>
+                    <td><i>; Shear</i></td>
+                </tr>
+                <tr>
+                    <td style="text-align: right;">and, <i>R<sub>zB</sub> = F<sub>z</sub>/n</i></td>
+                    <td>=</td>
+                    <td>{{ summary.params.R_zb }} <i>kN</i></td>
+                    <td><i>; Shear</i></td>
+                </tr>
+                <tr>
+                    <td>Resultant shear, <i>V<sub>u</sub> = (R<sub>yB</sub><sup>2</sup> + R<sub>zB</sub><sup>2</sup>)<sup>0.5</sup></i></td>
+                    <td>=</td>
+                    <td>{{ summary.params.Vu }} <i>kN</i></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div>
+        <h3>Shear Strength Limited by Tilting and Bearing</h3>
+        <!-- <p>for t<sub>2</sub>/t<sub>1</sub> ≤ 1.0,</p>
+        <table>
+            <tbody class="borderless">
+                <tr>
+                    <td>
+                        <img src="../../reports/images/eqn_conn1.png">
+                    </td>
+                    <td>(Sec. J4.3.1, AISI S100-16)</td>
+                </tr>
+            </tbody>
+        </table> -->
+        
+        <table class="table__50">
+            <thead>
+                <tr>
+                    <th>𝜑</th>
+                    <th>t<sub>1</sub></th>
+                    <th>t<sub>2</sub></th>
+                    <th>d</th>
+                    <th>F<sub>u1</sub></th>
+                    <th>F<sub>u2</sub></th>
+                    <th>𝜑P<sub>nv</sub></th>
+                    <th>V<sub>u</sub></th>
+                    <th>Ratio</th>
+                    <th>Check</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{ summary.shear_tilting.phi }}</td>
+                    <td>{{ summary.params.t1 }}</td>
+                    <td>{{ summary.params.t2 }}</td>
+                    <td>{{ summary.params.dia }}</td>
+                    <td>{{ summary.params.F_u1 }}</td>
+                    <td>{{ summary.params.F_u2 }}</td>
+                    <td>{{ summary.shear_tilting.phi_P_nv }}</td>
+                    <td>{{ summary.params.Vu }}</td>
+                    <td>{{ summary.shear_tilting.ratio }}</td>
+                    <td class="{% if summary.shear_tilting.ratio <= 1 %}ok{% else %}not-ok{% endif %}">
+                        {% if summary.shear_tilting.ratio <= 1 %} OK {% else %} NOT OK {% endif %}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div>
+        <h3>Pull-out Strength in Tension</h3>
+        <table class="table__50">
+            <thead>
+                <tr>
+                    <th>𝜑</th>
+                    <th>t<sub>c</sub></th>
+                    <th>d</th>
+                    <th>F<sub>u2</sub></th>
+                    <th>𝜑P<sub>not</sub></th>
+                    <th>T<sub>u</sub></th>
+                    <th>Ratio</th>
+                    <th>Check</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{ summary.pullout_tension.phi }}</td>
+                    <td>{{ summary.pullout_tension.tc }}</td>
+                    <td>{{ summary.params.dia }}</td>
+                    <td>{{ summary.params.F_u2 }}</td>
+                    <td>{{ summary.pullout_tension.phi_P_not }}</td>
+                    <td>{{ summary.params.Tu }}</td>
+                    <td>{{ summary.pullout_tension.ratio }}</td>
+                    <td class="{% if summary.pullout_tension.ratio <= 1 %}ok{% else %}not-ok{% endif %}">
+                        {% if summary.pullout_tension.ratio <= 1 %} OK {% else %} NOT OK {% endif %}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div>
+        <h3>Pull-over Strength in Tension</h3>
+        <table class="table__50">
+            <thead>
+                <tr>
+                    <th>𝜑</th>
+                    <th>d<sub>h</sub></th>
+                    <th>d<sub>w</sub><sup>'</sup></th>
+                    <th>𝜑P<sub>nov</sub></th>
+                    <th>T<sub>u</sub></th>
+                    <th>Ratio</th>
+                    <th>Check</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{ summary.pullover_tension.phi }}</td>
+                    <td>{{ summary.params.head_dia }}</td>
+                    <td>{{ summary.pullover_tension.d_w_prime }}</td>
+                    <td>{{ summary.pullover_tension.phi_P_nov }}</td>
+                    <td>{{ summary.params.Tu }}</td>
+                    <td>{{ summary.pullover_tension.ratio }}</td>
+                    <td class="{% if summary.pullover_tension.ratio <= 1 %}ok{% else %}not-ok{% endif %}">
+                        {% if summary.pullover_tension.ratio <= 1 %} OK {% else %} NOT OK {% endif %}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div>
+        <h3>Combined Shear and Pull-over</h3>
+        <table class="table__50">
+            <thead>
+                <tr>
+                    <th>𝜑</th>
+                    <th>V<sub>u</sub></th>
+                    <th>T<sub>u</sub></th>
+                    <th>P<sub>nv</sub></th>
+                    <th>P<sub>nov</sub></th>
+                    <th>𝛽</th>
+                    <th>1.1𝜑</th>
+                    <th>Check</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{ summary.comb_shear_pullover.phi }}</td>
+                    <td>{{ summary.params.Vu }}</td>
+                    <td>{{ summary.params.Tu }}</td>
+                    <td>{{ summary.comb_shear_pullover.P_nv }}</td>
+                    <td>{{ summary.comb_shear_pullover.P_nov }}</td>
+                    <td>{{ summary.comb_shear_pullover.beta }}</td>
+                    <td>{{ 1.1 * summary.comb_shear_pullover.phi }}</td>
+                    <td class="{% if summary.comb_shear_pullover.beta <= (1.1 * summary.comb_shear_pullover.phi) %}ok{% else %}not-ok{% endif %}">
+                        {% if summary.comb_shear_pullover.beta <= (1.1 * summary.comb_shear_pullover.phi) %} OK {% else %} NOT OK {% endif %}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div>
+        <h3>Combined Shear and Pull-out</h3>
+        <table class="table__50">
+            <thead>
+                <tr>
+                    <th>𝜑</th>
+                    <th>V<sub>u</sub></th>
+                    <th>T<sub>u</sub></th>
+                    <th>P<sub>nv</sub></th>
+                    <th>P<sub>not</sub></th>
+                    <th>𝛽</th>
+                    <th>1.15𝜑</th>
+                    <th>Check</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{ summary.comb_shear_pullout.phi }}</td>
+                    <td>{{ summary.params.Vu }}</td>
+                    <td>{{ summary.params.Tu }}</td>
+                    <td>{{ summary.comb_shear_pullout.P_nv }}</td>
+                    <td>{{ summary.comb_shear_pullout.P_not }}</td>
+                    <td>{{ summary.comb_shear_pullout.beta }}</td>
+                    <td>{{ 1.15 * summary.comb_shear_pullout.phi }}</td>
+                    <td class="{% if summary.comb_shear_pullout.beta <= (1.15 * summary.comb_shear_pullout.phi) %}ok{% else %}not-ok{% endif %}">
+                        {% if summary.comb_shear_pullout.beta <= (1.1 * summary.comb_shear_pullout.phi) %} OK {% else %} NOT OK {% endif %}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+{% else %}
+    <p>No data available.</p>
+{% endif %}
+
+</body>
+</html>

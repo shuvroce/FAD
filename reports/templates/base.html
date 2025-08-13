@@ -1,0 +1,29 @@
+<!-- ====== Header ======== -->
+<section class="page__header">
+    <div class="page__header_left">
+        <p class="page__header_title">
+            Structural Design Report
+        </p>
+        <div class="page__header_logo">
+            <img src="../../ui/assets/logo.png">
+        </div>
+        <p class="page__header_web">
+            <a>www.akramh.com</a>
+        </p>
+    </div>
+    <div class="page__header_right">
+        <p class="page__header_ref">
+            {% if project_info.ref_no  %}
+                {{ project_info.ref_no }}
+            {% endif %}
+        </p>
+        <p class="page__header_project">
+            {% if project_info.project_name %}
+                Project: {{ project_info.project_name }}
+            {% endif %}
+        </p>
+        <p class="page__header_date">
+            Date: {{ project_info.date_time }}
+        </p>
+    </div>
+</section>

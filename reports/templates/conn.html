@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Glass Design Report</title>
+    <script src="js/paged.polyfill.js"></script>
+
+    <link rel="stylesheet" href="css/katex.min.css">
+    <link rel="stylesheet" href="css/report.css">
+</head>
+
+<body>
+    <!-- ====== Header ======== -->
+    {% include "base.html" %}
+
+    <section class="indi__front">
+        <h1>Design of Connection</h1>
+    </section>
+
+    <section>
+        <h2>Design of Connection</h2>
+        <h3>Joint Forces</h3>
+        <p>Design forces of mullion-transom connection joint –</p>
+        <table class="align__center width__70">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>SLS (D + W)</th>
+                    <th>ULS (1.2D + 1.6W)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Wind Load, F<sub>y</sub></td>
+                    <td>{{ summary.params.wind_load }} <i>kN</i></td>
+                    <td>{{ summary.params.factored_fy }} <i>kN</i></td>
+                </tr>
+                <tr>
+                    <td>Dead Load, F<sub>z</sub></td>
+                    <td>{{ summary.params.dead_load }} <i>kN</i></td>
+                    <td>{{ summary.params.factored_fz }} <i>kN</i></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>Data Analysis</h3>
+        <ul class="list__bullet">
+            <li>{{ summary.params.t1 }} mm thick, Aluminum {{ summary.params.t1_grade }} Cleat</li>
+            <li>{{ summary.params.n * 2 }} – M{{ summary.params.dia}} × {{ summary.params.screw_length}} Hex Head Self-drilling screw</li>
+        </ul>
+
+        <div class="calc__fig3">
+            {% if option == "Option 1" %}
+                <img src="../images/fig_conn1.png" alt="Screw Configuration">
+            {% elif option == "Option 2" %}
+                <img src="../images/fig_conn2.png" alt="Screw Configuration">
+            {% elif option == "Option 3" %}
+                <img src="../images/fig_conn3.png" alt="Screw Configuration">
+            {% elif option == "Option 4" %}
+                <img src="../images/fig_conn4.png" alt="Screw Configuration">
+            {% endif %}
+        </div>
+
+        <div>
+            <br>
+                Ignoring eccentricity (assuming very small) and applying the equations of static equilibrium, </br>
+                <span style="margin-left: 1rem;">∑F<sub>y</sub> <sup>→+</sup> = 0, ∑F<sub>z</sub> <sup>↑+</sup> = 0,</span>
+            </p>
+            <table class="borderless eqn">
+                <tbody>
+                    <tr>
+                        <td>No. of screw per side, n</td>
+                        <td>=</td>
+                        <td>{{ summary.params.n }} <i>Nos.</i></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            {% if option == "Option 1"  %}
+                                For screw A1 & A2 (transom), <i>R<sub>yA</sub> = F<sub>y</sub>/n</i>
+                            {% elif option == "Option 2"  %}
+                                For screw A1, A2, & A3 (transom), <i>R<sub>yA</sub> = F<sub>y</sub>/n</i>
+                            {% elif option == "Option 3"  %}
+                                For screw A1, A2, A3 & A4 (transom), <i>R<sub>yA</sub> = F<sub>y</sub>/n</i>
+                            {% elif option == "Option 4"  %}
+                                For screw A1, A2, A3, A4, A5 & A6 (transom), <i>R<sub>yA</sub> = F<sub>y</sub>/n</i>
+                            {% endif %}
+                        </td>
+                        <td>=</td>
+                        <td>{{ summary.params.R_ya }} <i>kN</i></td>
+                        <td><i>; Shear</i></td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;">and, <i>R<sub>zA</sub> = F<sub>z</sub>/n</i></td>
+                        <td>=</td>
+                        <td>{{ summary.params.R_za }} <i>kN</i></td>
+                        <td><i>; Tension</i></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            {% if option == "Option 1"  %}
+                                For screw B1 & B2 (mullion), <i>R<sub>yB</sub> = F<sub>y</sub>/n</i>
+                            {% elif option == "Option 2"  %}
+                                For screw B1, B2, & B3 (mullion), <i>R<sub>yB</sub> = F<sub>y</sub>/n</i>
+                            {% elif option == "Option 3"  %}
+                                For screw B1, B2, B3 & B4 (mullion), <i>R<sub>yB</sub> = F<sub>y</sub>/n</i>
+                            {% elif option == "Option 4"  %}
+                                For screw B1, B2, B3, B4, B5 & B6 (mullion), <i>R<sub>yB</sub> = F<sub>y</sub>/n</i>
+                            {% endif %}
+                        </td>
+                        <td>=</td>
+                        <td>{{ summary.params.R_yb }} <i>kN</i></td>
+                        <td><i>; Shear</i></td>
+                    </tr>
+                    <tr>
+                        <td style="text-align: right;">and, <i>R<sub>zB</sub> = F<sub>z</sub>/n</i></td>
+                        <td>=</td>
+                        <td>{{ summary.params.R_zb }} <i>kN</i></td>
+                        <td><i>; Shear</i></td>
+                    </tr>
+                    <tr>
+                        <td>Resultant shear, <i>V<sub>u</sub> = (R<sub>yB</sub><sup>2</sup> + R<sub>zB</sub><sup>2</sup>)<sup>0.5</sup></i></td>
+                        <td>=</td>
+                        <td>{{ summary.params.Vu }} <i>kN</i></td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="page__break">
+            <h3>Shear Strength Limited by Tilting and Bearing</h3>
+            {% if (summary.params.t2 / summary.params.t1) <= 1 %}
+                <p>for t<sub>2</sub>/t<sub>1</sub> ≤ 1.0,</p>
+                <table class="borderless width__100">
+                    <tbody>
+                        <tr>
+                            <td>
+                                <img src="../../reports/images/eqn_conn1.png" style="width: 65mm; padding-top: 0.5rem;">
+                            </td>
+                            <td style="text-align: right;">(Sec. J4.3.1, AISI S100-16)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            {% endif %}
+
+            <p><u>Where,</u></p>
+            <table class="borderless">
+                <tbody>
+                    <tr>
+                        <td>𝜑</td>
+                        <td>–</td>
+                        <td>Resistance factor</td>
+                    </tr>
+                    <tr>
+                        <td>t<sub>1</sub></td>
+                        <td>–</td>
+                        <td>Thickness of member contact with screw head (mm)</td>
+                    </tr>
+                    <tr>
+                        <td>t<sub>2</sub></td>
+                        <td>–</td>
+                        <td>Thickness of member not contact with screw head (mm)</td>
+                    </tr>
+                    <tr>
+                        <td>d</td>
+                        <td>–</td>
+                        <td>Nominal diameter of screw (mm)</td>
+                    </tr>
+                    <tr>
+                        <td>F<sub>u1</sub></td>
+                        <td>–</td>
+                        <td>Tensile strength of member in contact with screw head (MPa) <sup>a</sup></td>
+                    </tr>
+                    <tr>
+                        <td>F<sub>u2</sub></td>
+                        <td>–</td>
+                        <td>Tensile strength of member not in contact with screw head (MPa) <sup>b</sup></td>
+                    </tr>
+                    <tr>
+                        <td>V<sub>u</sub></td>
+                        <td>–</td>
+                        <td>Required shear strength (kN)</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <table class="head__gray width__100 align__center">
+                <tbody>
+                    <tr>
+                        <td>𝜑</td>
+                        <td>t<sub>1</sub></td>
+                        <td>t<sub>2</sub></td>
+                        <td>d</td>
+                        <td>F<sub>u1</sub></td>
+                        <td>F<sub>u2</sub></td>
+                        <td>𝜑P<sub>nv</sub></td>
+                        <td>V<sub>u</sub></td>
+                        <td>Ratio</td>
+                        <td>Check</td>
+                    </tr>
+                    <tr>
+                        <td>{{ summary.shear_tilting.phi }}</td>
+                        <td>{{ summary.params.t1 }}</td>
+                        <td>{{ summary.params.t2 }}</td>
+                        <td>{{ summary.params.dia }}</td>
+                        <td>{{ summary.params.F_u1 }}</td>
+                        <td>{{ summary.params.F_u2 }}</td>
+                        <td>{{ summary.shear_tilting.phi_P_nv }}</td>
+                        <td>{{ summary.params.Vu }}</td>
+                        <td>{{ summary.shear_tilting.ratio }}</td>
+                        <td class="{% if summary.shear_tilting.ratio <= 1 %}ok{% else %}not-ok{% endif %}">
+                            {% if summary.shear_tilting.ratio <= 1 %} OK {% else %} NOT OK {% endif %}
+                        </td>
+                    </tr>
+                    <p class="footnote"><sup>a </sup> Aluminum Alloy {{ summary.params.t1_grade }}, <sup>b </sup> Aluminum Alloy {{ summary.params.t2_grade }}</p>
+                </tbody>
+            </table>
+        </div>
+
+        <div>
+            <h3>Pull-out Strength in Tension</h3>
+            <table class="borderless width__100">
+                <tbody>
+                    <tr>
+                        <td>
+                            <b><i>𝝋P<sub>not</sub> = 𝝋 0.85 t<sub>c</sub> d F<sub>u2</sub></i></b> (kN)
+                        </td>
+                        <td style="text-align: right;">(Sec. J4.4.1, AISI S100-16)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p><u>Where,</u></p>
+            <table class="borderless">
+                <tbody>
+                    <tr>
+                        <td>𝜑</td>
+                        <td>–</td>
+                        <td>Resistance factor</td>
+                    </tr>
+                    <tr>
+                        <td>t<sub>c</sub></td>
+                        <td>–</td>
+                        <td>Lesser of Depth of penetration and thickness t<sub>2</sub> (mm)</td>
+                    </tr>
+                    <tr>
+                        <td>T<sub>u</sub></td>
+                        <td>–</td>
+                        <td>Required tensile strength (kN)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <table class="head__gray width__100 align__center">
+                <tbody>
+                    <tr>
+                        <td>𝜑</td>
+                        <td>t<sub>c</sub></td>
+                        <td>d</td>
+                        <td>F<sub>u2</sub></td>
+                        <td>𝜑P<sub>not</sub></td>
+                        <td>T<sub>u</sub></td>
+                        <td>Ratio</td>
+                        <td>Check</td>
+                    </tr>
+                    <tr>
+                        <td>{{ summary.pullout_tension.phi }}</td>
+                        <td>{{ summary.pullout_tension.tc }}</td>
+                        <td>{{ summary.params.dia }}</td>
+                        <td>{{ summary.params.F_u2 }}</td>
+                        <td>{{ summary.pullout_tension.phi_P_not }}</td>
+                        <td>{{ summary.params.Tu }}</td>
+                        <td>{{ summary.pullout_tension.ratio }}</td>
+                        <td class="{% if summary.pullout_tension.ratio <= 1 %}ok{% else %}not-ok{% endif %}">
+                            {% if summary.pullout_tension.ratio <= 1 %} OK {% else %} NOT OK {% endif %}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="page__break">
+            <h3>Pull-over Strength in Tension</h3>
+            <table class="borderless width__100">
+                <tbody>
+                    <tr>
+                        <td>
+                            <b><i>𝝋P<sub>nov</sub> = 𝝋 1.5 t<sub>1</sub> d<sub>w</sub><sup>'</sup> F<sub>u1</sub></i></b> (kN)
+                        </td>
+                        <td style="text-align: right;">(Sec. J4.4.2, AISI S100-16)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p><u>Where,</u></p>
+            <table class="borderless">
+                <tbody>
+                    <tr>
+                        <td>𝜑</td>
+                        <td>–</td>
+                        <td>Resistance factor</td>
+                    </tr>
+                    <tr>
+                        <td>d<sub>w</sub><sup>'</sup> = min(d<sub>h</sub>, 19.1)</td>
+                        <td>–</td>
+                        <td>Effective pull-over diameter for screw without independent washer (mm)</td>
+                    </tr>
+                    <tr>
+                        <td>d<sub>h</sub></td>
+                        <td>–</td>
+                        <td>Screw head or integral hex washer diameter (mm)</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <table class="head__gray width__100 align__center">
+                <tbody>
+                    <tr>
+                        <td>𝜑</td>
+                        <td>d<sub>h</sub></td>
+                        <td>d<sub>w</sub><sup>'</sup></td>
+                        <td>𝜑P<sub>nov</sub></td>
+                        <td>T<sub>u</sub></td>
+                        <td>Ratio</td>
+                        <td>Check</td>
+                    </tr>
+                    <tr>
+                        <td>{{ summary.pullover_tension.phi }}</td>
+                        <td>{{ summary.params.head_dia }}</td>
+                        <td>{{ summary.pullover_tension.d_w_prime }}</td>
+                        <td>{{ summary.pullover_tension.phi_P_nov }}</td>
+                        <td>{{ summary.params.Tu }}</td>
+                        <td>{{ summary.pullover_tension.ratio }}</td>
+                        <td class="{% if summary.pullover_tension.ratio <= 1 %}ok{% else %}not-ok{% endif %}">
+                            {% if summary.pullover_tension.ratio <= 1 %} OK {% else %} NOT OK {% endif %}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div>
+            <h3>Combined Shear and Pull-over</h3>
+            <table  class="borderless width__100">
+                <tbody>
+                    <tr>
+                        <td>
+                            <b><i>𝜷 = (V<sub>u</sub>/P<sub>nv</sub>) + 0.71(T<sub>u</sub>/P<sub>nov</sub>) ≤ 1.1𝝋</i></b>
+                            <!-- <img src="../../reports/images/eqn_conn4.png"> -->
+                        </td>
+                        <td style="text-align: right;">(Sec. J4.5.1, AISI S100-16)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <p><u>Where,</u></p>
+            <table class="borderless">
+                <tbody>
+                    <tr>
+                        <td>𝜑</td>
+                        <td>–</td>
+                        <td>Resistance factor</td>
+                    </tr>
+                    <tr>
+                        <td>V<sub>u</sub></td>
+                        <td>–</td>
+                        <td>Required shear strength (kN)</td>
+                    </tr>
+                    <tr>
+                        <td>T<sub>u</sub></td>
+                        <td>–</td>
+                        <td>Required tensile strength (kN)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <table class="head__gray width__100 align__center">
+                <tbody>
+                    <tr>
+                        <td>𝜑</td>
+                        <td>V<sub>u</sub></td>
+                        <td>T<sub>u</sub></td>
+                        <td>P<sub>nv</sub></td>
+                        <td>P<sub>nov</sub></td>
+                        <td>𝛽</td>
+                        <td>1.1𝜑</td>
+                        <td>Check</td>
+                    </tr>
+                    <tr>
+                        <td>{{ summary.comb_shear_pullover.phi }}</td>
+                        <td>{{ summary.params.Vu }}</td>
+                        <td>{{ summary.params.Tu }}</td>
+                        <td>{{ summary.comb_shear_pullover.P_nv }}</td>
+                        <td>{{ summary.comb_shear_pullover.P_nov }}</td>
+                        <td>{{ summary.comb_shear_pullover.beta }}</td>
+                        <td>{{ 1.1 * summary.comb_shear_pullover.phi }}</td>
+                        <td class="{% if summary.comb_shear_pullover.beta <= (1.1 * summary.comb_shear_pullover.phi) %}ok{% else %}not-ok{% endif %}">
+                            {% if summary.comb_shear_pullover.beta <= (1.1 * summary.comb_shear_pullover.phi) %} OK {% else %} NOT OK {% endif %}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div>
+            <h3>Combined Shear and Pull-out</h3>
+            <table class="borderless width__100">
+                <tbody>
+                    <tr>
+                        <td>
+                            <b><i>𝜷 = (V<sub>u</sub>/P<sub>nov</sub>) + (T<sub>u</sub>/P<sub>not</sub>) ≤ 1.15𝝋</i></b>
+                            <!-- <img src="../../reports/images/eqn_conn5.png"> -->
+                        </td>
+                        <td style="text-align: right;">(Sec. J4.5.1, AISI S100-16)</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <table class="head__gray width__100 align__center">
+                <tbody>
+                    <tr>
+                        <td>𝜑</td>
+                        <td>V<sub>u</sub></td>
+                        <td>T<sub>u</sub></td>
+                        <td>P<sub>nv</sub></td>
+                        <td>P<sub>not</sub></td>
+                        <td>𝛽</td>
+                        <td>1.15𝜑</td>
+                        <td>Check</td>
+                    </tr>
+                    <tr>
+                        <td>{{ summary.comb_shear_pullout.phi }}</td>
+                        <td>{{ summary.params.Vu }}</td>
+                        <td>{{ summary.params.Tu }}</td>
+                        <td>{{ summary.comb_shear_pullout.P_nv }}</td>
+                        <td>{{ summary.comb_shear_pullout.P_not }}</td>
+                        <td>{{ summary.comb_shear_pullout.beta }}</td>
+                        <td>{{ 1.15 * summary.comb_shear_pullout.phi }}</td>
+                        <td class="{% if summary.comb_shear_pullout.beta <= (1.15 * summary.comb_shear_pullout.phi) %}ok{% else %}not-ok{% endif %}">
+                            {% if summary.comb_shear_pullout.beta <= (1.1 * summary.comb_shear_pullout.phi) %} OK {% else %} NOT OK {% endif %}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</body>
+</html>

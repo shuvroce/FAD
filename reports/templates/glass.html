@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Glass Design Report</title>
+    <script src="js/paged.polyfill.js"></script>
+
+    <link rel="stylesheet" href="css/katex.min.css">
+    <link rel="stylesheet" href="css/report.css">
+</head>
+
+<body>
+    <!-- ====== Header ======== -->
+    {% include "base.html" %}
+
+    <section class="indi__front">
+        <h1>Design of Glass Panel</h1>
+    </section>
+
+    <section>
+        {% if composition == "Single Glaze Unit (SGU)" %}
+            {% include "glass_sgu.html" %}
+
+        {% elif composition == "Double Glaze Unit (DGU)" %}
+            {% include "glass_dgu.html" %}
+
+        {% elif composition == "Laminated Glaze Unit (LGU)" %}
+            {% include "glass_lgu.html" %}
+
+        {% elif composition == "Laminated Double Glaze Unit (LDGU)" %}
+            {% include "glass_ldgu.html" %}
+        {% endif %}
+    </section>
+</body>
+</html>
