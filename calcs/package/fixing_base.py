@@ -1,64 +1,9 @@
-from dataclasses import dataclass
 # import material_properties as mp
 import package.material_properties as mp
 import math
 
 PI = math.pi
 inf = 1e10
-
-@dataclass
-class Params:
-    # anchor
-    N_ua: float = 8.0
-    N_ug: float = 16.5
-    V_ua: float = 2.6
-    V_ug: float = 4.8
-    tension_ecc: float = 0
-    shear_ecc: float = 0
-    A_NC: float = 1025645
-    A_VC: float = 162564
-    bp_length: float = 250
-    bp_width: float = 120
-    anchor_dia: float = 12
-    embed_depth: float = 70
-    n_anchor: int = 4
-    anchor_grade: str = "Grade 5.8"
-    install_type: str = "post-installed"
-    conc_grade: str = "M25"
-    conc_condition: str = "cracked"
-    conc_weight_type: str ="normal"
-    conc_depth: float = 300
-    conc_Np5: float = 20
-    steel_grade: str = "A572 Gr. 50"
-    profile_depth: float = 110
-    profile_width: float = 80
-    ed1: float = 50
-    ed2: float = 50
-    C_a1: float = 100
-    C_b1: float = 100
-    C_a2: float = 200
-    C_b2: float = 200
-    
-    # base plate
-    compression_load: float = 8.0
-    tension_load: float = 2.0
-    
-    # fin plate
-    h_shear_load: float = 20.0
-    v_shear_load: float = 5.0
-    v_shear_ecc: float = 90
-    fin_length: float = 150
-    fin_width: float = 120
-    fin_distance: float = 80
-    n_bolt: int = 2
-    bolt_dia: float = 10
-    bolt_grade: str = "SS A4-70"
-    ed1_f: float = 35
-    ed2_f: float = 35
-    weld_grade: str = "E70xx"
-    leg_length: float = 5
-
-
 
 class AnchorCalculator():
     def __init__(self, N_ua, N_ug, V_ua, V_ug, tension_ecc, shear_ecc,
