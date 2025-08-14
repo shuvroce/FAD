@@ -1,5 +1,5 @@
 # import material_properties as mp
-import package.material_properties as mp
+from calcs.package import material_properties as mp
 import math
 
 PI = math.pi

@@ -1,11 +1,12 @@
-from package.fixing_base import AnchorCalculator, BasePlateCalculator, FinPlateCalculator
+from .package.fixing_base import AnchorCalculator, BasePlateCalculator, FinPlateCalculator
 
 class BoxClumpCalculator():
-    def __init__(self, wind_load=30.0, dead_load=8.0, wind_ecc=0, dead_ecc=0, bp_length=250, bp_width=120, steel_grade="A572 Gr. 50",
+    def __init__(self, wind_load=30.0, dead_load=8.0, wind_ecc=0, dead_ecc=0,
+                    bp_length=250, bp_width=120, steel_grade="A572 Gr. 50",
                     profile_depth=110, profile_width=80, n_anchor=4, anchor_dia=12, embed_depth=70,
                     anchor_grade="Grade 5.8", install_type="post-installed",
-                    conc_grade="M25", conc_condition="cracked", conc_weight_type="normal", conc_depth=300, conc_Np5=20,
-                    ed1=50, ed2=50, C_a1=100, C_b1=100, C_a2=200, C_b2=200):
+                    conc_grade="M25", conc_condition="cracked", conc_weight_type="normal",
+                    conc_depth=300, conc_Np5=20, ed1=50, ed2=50, C_a1=100, C_b1=100, C_a2=200, C_b2=200):
         
         self.wind_load = wind_load
         self.dead_load = dead_load

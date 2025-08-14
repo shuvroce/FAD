@@ -198,6 +198,7 @@ class MainWindow(QMainWindow):
         from ui.wind_gui import WindLoadTab
         from ui.glass_gui import GlassTab
         from ui.conn_gui import ConnTab
+        from ui.fixing_gui import FixingTab
         # from ui.project_tab import ProjectTab
         from PyQt5.QtWidgets import QLabel
 
@@ -206,7 +207,7 @@ class MainWindow(QMainWindow):
         self.glass_tab = GlassTab()
         self.frame_tab = QLabel("Frame Page Coming soon")
         self.conn_tab = ConnTab()
-        self.fixing_tab = QLabel("Fixing Page Coming soon")
+        self.fixing_tab = FixingTab()
         self.project_tab = QLabel("Project Page Coming soon")
         
         pages = [
