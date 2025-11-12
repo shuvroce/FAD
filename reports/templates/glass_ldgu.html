@@ -260,7 +260,7 @@
                     <td></td>
                 </tr>
                 <tr>
-                    <td><i>r<sub>1</sub> = -2.29 - 5.83(a/b) + 2.17(a/b)<sup>2</sup> - 0.2067(a/b)<sup>3</sup></i></td>
+                    <td><i>r<sub>1</sub> = -2.29 + 5.83(a/b) - 2.17(a/b)<sup>2</sup> + 0.2067(a/b)<sup>3</sup></i></td>
                     <td>=</td>
                     <td>{{ summary.deflection.r_1 }}</td>
                     <td></td>
@@ -277,6 +277,12 @@
         <p class="dgu__head">For Outer Panel:</p>
         <table class="borderless table__80">
             <tbody>
+                <tr>
+                    <td><i>Service wind load, q<sub>1</sub> = 0.7 P<sub>z</sub>/LS<sub>1</sub></i></td>
+                    <td>=</td>
+                    <td>{{ summary.deflection.q1 }}</td>
+                    <td></td>
+                </tr>
                 <tr>
                     <td><i>First glass minimum thickness of outer panel, t<sub>1-1,min</sub></i></td>
                     <td>=</td>
@@ -296,7 +302,7 @@
                     <td></td>
                 </tr>
                 <tr>
-                    <td><i>x<sub>1</sub> = ln{ln[q(ab)<sup>2</sup> / Et<sub>1,eff</sub><sup>4</sup>]}</i></td>
+                    <td><i>x<sub>1</sub> = ln{ln[q<sub>1</sub>(ab)<sup>2</sup> / Et<sub>1,eff</sub><sup>4</sup>]}</i></td>
                     <td>=</td>
                     <td>{{ summary.deflection.x1 }}</td>
                     <td></td>
@@ -319,7 +325,13 @@
         <table class="borderless table__80">
             <tbody>
                 <tr>
-                    <td><i>x<sub>2</sub> = ln{ln[q(ab)<sup>2</sup> / Et<sub>2</sub><sup>4</sup>]}</i></td>
+                    <td><i>Service wind load, q<sub>2</sub> = 0.7 P<sub>z</sub>/LS<sub>2</sub></i></td>
+                    <td>=</td>
+                    <td>{{ summary.deflection.q2 }}</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td><i>x<sub>2</sub> = ln{ln[q<sub>2</sub>(ab)<sup>2</sup> / Et<sub>2</sub><sup>4</sup>]}</i></td>
                     <td>=</td>
                     <td>{{ summary.deflection.x2 }}</td>
                     <td></td>

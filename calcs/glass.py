@@ -70,7 +70,7 @@ class SGUCalculator(GlassCalculatorBase):
             "length": self.glass_length,
             "width": self.glass_width,
             "thickness": self.thickness,
-            "eff_area": self.eff_area,
+            "eff_area": round(self.eff_area, 2),
             "wind_load": self.wind_load,
             "glass_type": self.glass_type,
             "support_type": self.support_type,
@@ -96,8 +96,9 @@ class SGUCalculator(GlassCalculatorBase):
         }
     
     def compute_glass_deflection(self):
+        q = 0.7 * self.wind_load
         min_thk = self.minimum_thickness(self.thickness)
-        x = np.log(np.log(self.wind_load * (self.glass_length * self.glass_width)**2 / (self.E * min_thk**4)))
+        x = np.log(np.log(q * (self.glass_length * self.glass_width)**2 / (self.E * min_thk**4)))
         delta = min_thk * np.exp(self.r_0 + self.r_1 * x + self.r_2 * x**2)
         delta_a = self.glass_width / 60
         
@@ -105,6 +106,7 @@ class SGUCalculator(GlassCalculatorBase):
             "r_0": round(self.r_0, 2),
             "r_1": round(self.r_1, 2),
             "r_2": round(self.r_2, 2),
+            "q": round(q, 2),
             "min_thk": round(min_thk, 2),
             "x": round(x, 2),
             "delta": round(delta, 2),
@@ -176,7 +178,7 @@ class DGUCalculator(GlassCalculatorBase):
             "thickness1": self.thickness1,
             "gap": self.gap,
             "thickness2": self.thickness2,
-            "eff_area": self.eff_area,
+            "eff_area": round(self.eff_area, 2),
             "wind_load": self.wind_load,
             "glass1_type": self.glass1_type,
             "glass2_type": self.glass2_type,
@@ -223,8 +225,8 @@ class DGUCalculator(GlassCalculatorBase):
     
     def compute_glass_deflection(self):
         ls1, ls2 = self.load_share_factor()
-        q1 = self.wind_load / ls1
-        q2 = self.wind_load / ls2
+        q1 = 0.7 * self.wind_load / ls1
+        q2 = 0.7 * self.wind_load / ls2
         
         min_thk1 = self.minimum_thickness(self.thickness1)
         min_thk2 = self.minimum_thickness(self.thickness2)
@@ -322,7 +324,7 @@ class LGUCalculator(GlassCalculatorBase):
             "thickness_inner": self.thickness_inner,
             "thickness2": self.thickness2,
             "thickness": self.thickness,
-            "eff_area": self.eff_area,
+            "eff_area": round(self.eff_area, 2),
             "wind_load": self.wind_load,
             "glass_type": self.glass_type,
             "support_type": self.support_type,
@@ -355,8 +357,9 @@ class LGUCalculator(GlassCalculatorBase):
         }
     
     def compute_glass_deflection(self):
+        q = 0.7 * self.wind_load
         h_eff = self.effective_thickness_lgu()
-        x = np.log(np.log(self.wind_load * (self.glass_length * self.glass_width)**2 / (self.E * h_eff**4)))
+        x = np.log(np.log(q * (self.glass_length * self.glass_width)**2 / (self.E * h_eff**4)))
         delta = h_eff * np.exp(self.r_0 + self.r_1 * x + self.r_2 * x**2)
         delta_a = self.glass_width / 60
         
@@ -364,6 +367,7 @@ class LGUCalculator(GlassCalculatorBase):
             "r_0": round(self.r_0, 2),
             "r_1": round(self.r_1, 2),
             "r_2": round(self.r_2, 2),
+            "q": round(q, 2),
             "min_thk1": round(self.min_thk1, 2),
             "min_thk2": round(self.min_thk2, 2),
             "h_eff": round(h_eff, 2),
@@ -430,7 +434,7 @@ class LDGUCalculator(GlassCalculatorBase):
             "thickness1": self.thickness1,
             "gap": self.gap,
             "thickness2": self.thickness2,
-            "eff_area": self.eff_area,
+            "eff_area": round(self.eff_area, 2),
             "wind_load": self.wind_load,
             "glass1_type": self.glass1_type,
             "glass2_type": self.glass2_type,
@@ -484,8 +488,8 @@ class LDGUCalculator(GlassCalculatorBase):
     
     def compute_glass_deflection(self):
         ls1, ls2 = self.load_share_factor()
-        q1 = self.wind_load / ls1
-        q2 = self.wind_load / ls2
+        q1 = 0.7 * self.wind_load / ls1
+        q2 = 0.7 * self.wind_load / ls2
         
         h1_eff = self.effective_thickness_lgu()
         x1 = np.log(np.log(q1 * (self.glass_length * self.glass_width)**2 / (self.E * h1_eff**4)))
